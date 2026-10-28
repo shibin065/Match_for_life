@@ -1,0 +1,199 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static admin_stats %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">
+<style>
+    .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+    .stat-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        border: var(--glass-border);
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: var(--glass-shadow);
+        text-align: center;
+        transition: transform 0.2s ease;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 5px;
+    }
+    .stat-label {
+        color: #555;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+    }
+    
+    .dashboard-modules {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 20px;
+    }
+    
+    .module table th, .module table td {
+        padding: 12px 20px;
+    }
+    
+    .module table th a, .module table td a {
+        color: var(--body-fg);
+        font-weight: 500;
+    }
+    
+    .module table td a.addlink, .module table td a.changelink {
+        color: var(--primary);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+
+    <!-- Custom Statistics Panel -->
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <div class="stat-value">{% get_total_donors %}</div>
+            <div class="stat-label">Total Donors</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{% get_verified_hospitals %}</div>
+            <div class="stat-label">Verified Hospitals</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{% get_active_requests %}</div>
+            <div class="stat-label">Active Requests</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{% get_accepted_matches %}</div>
+            <div class="stat-label">Accepted Matches</div>
+        </div>
+    </div>
+
+    <!-- Grouped Modules -->
+    <div class="dashboard-modules">
+        
+        <!-- User Management -->
+        <div class="module">
+            <h2>User Management</h2>
+            <table>
+                <tbody>
+                    <tr>
+                        <th scope="row"><a href="{% url 'admin:auth_user_changelist' %}">Users</a></th>
+                        <td><a href="{% url 'admin:auth_user_add' %}" class="addlink">Add</a></td>
+                        <td><a href="{% url 'admin:auth_user_changelist' %}" class="changelink">Change</a></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><a href="{% url 'admin:auth_group_changelist' %}">Groups</a></th>
+                        <td><a href="{% url 'admin:auth_group_add' %}" class="addlink">Add</a></td>
+                        <td><a href="{% url 'admin:auth_group_changelist' %}" class="changelink">Change</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Donor Management -->
+        <div class="module">
+            <h2>Donor Management</h2>
+            <table>
+                <tbody>
+                    <tr>
+                        <th scope="row"><a href="{% url 'admin:donors_donor_changelist' %}">Donors</a></th>
+                        <td><a href="{% url 'admin:donors_donor_add' %}" class="addlink">Add</a></td>
+                        <td><a href="{% url 'admin:donors_donor_changelist' %}" class="changelink">Change</a></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><a href="{% url 'admin:donors_donation_history_changelist' %}">Donation History</a></th>
+                        <td><a href="{% url 'admin:donors_donation_history_add' %}" class="addlink">Add</a></td>
+                        <td><a href="{% url 'admin:donors_donation_history_changelist' %}" class="changelink">Change</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Hospital Management -->
+        <div class="module">
+            <h2>Hospital Management</h2>
+            <table>
+                <tbody>
+                    <tr>
+                        <th scope="row"><a href="{% url 'admin:hospitals_hospital_changelist' %}">Hospitals</a></th>
+                        <td><a href="{% url 'admin:hospitals_hospital_add' %}" class="addlink">Add</a></td>
+                        <td><a href="{% url 'admin:hospitals_hospital_changelist' %}" class="changelink">Change</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Emergency Management -->
+        <div class="module" style="grid-column: 1 / -1;">
+            <h2>Emergency Management</h2>
+            <table>
+                <tbody>
+                    <tr>
+                        <th scope="row"><a href="{% url 'admin:emergency_requests_emergency_request_changelist' %}">Emergency Requests</a></th>
+                        <td><a href="{% url 'admin:emergency_requests_emergency_request_add' %}" class="addlink">Add</a></td>
+                        <td><a href="{% url 'admin:emergency_requests_emergency_request_changelist' %}" class="changelink">Change</a></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><a href="{% url 'admin:emergency_requests_donor_request_match_changelist' %}">Donor Request Matches</a></th>
+                        <td><a href="{% url 'admin:emergency_requests_donor_request_match_add' %}" class="addlink">Add</a></td>
+                        <td><a href="{% url 'admin:emergency_requests_donor_request_match_changelist' %}" class="changelink">Change</a></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><a href="{% url 'admin:emergency_requests_medical_screening_changelist' %}">Medical Screenings</a></th>
+                        <td><a href="{% url 'admin:emergency_requests_medical_screening_add' %}" class="addlink">Add</a></td>
+                        <td><a href="{% url 'admin:emergency_requests_medical_screening_changelist' %}" class="changelink">Change</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
+
+{% block sidebar %}
+<div id="content-related">
+    <div class="module" id="recent-actions-module">
+        <h2>{% translate 'Recent actions' %}</h2>
+        <h3>{% translate 'My actions' %}</h3>
+        {% load log %}
+        {% get_admin_log 10 as admin_log for_user user %}
+        {% if not admin_log %}
+        <p>{% translate 'None available' %}</p>
+        {% else %}
+        <ul class="actionlist">
+        {% for entry in admin_log %}
+        <li class="{% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}">
+            {% if entry.is_deletion or not entry.get_admin_url %}
+                {{ entry.object_repr }}
+            {% else %}
+                <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
+            {% endif %}
+            <br>
+            {% if entry.content_type %}
+                <span class="mini quiet">{% filter capfirst %}{{ entry.content_type.name }}{% endfilter %}</span>
+            {% else %}
+                <span class="mini quiet">{% translate 'Unknown content' %}</span>
+            {% endif %}
+        </li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
